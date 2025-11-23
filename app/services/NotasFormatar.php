@@ -82,6 +82,40 @@ Class NotasFormatar {
         return $array_notas_finais;
     }
 
+    function calculo3($array_notas, $arredondamento_id) {
+        $array_notas_finais = [];
+
+        foreach ($array_notas as $nota) {
+            $disciplina_id = $nota['disciplina_id'];
+            if (!isset($array_notas_finais[$disciplina_id])) {
+                $array_notas_finais[$disciplina_id] = [
+                    'disciplina_id' => $disciplina_id,
+                    'bimestres' => [1 => 0, 2 => 0, 3 => 0, 4 => 0]
+                ];
+            }
+
+            $bimestre = count(array_filter($array_notas_finais[$disciplina_id]['bimestres'])) + 1;
+            if ($bimestre <= 4) {
+                $array_notas_finais[$disciplina_id]['bimestres'][$bimestre] = $nota['valor_nota'];
+            }
+        }
+
+        foreach ($array_notas_finais as &$nota_final) {
+            $b = $nota_final['bimestres'];
+            $nota_calculada = (
+                $b[1] +
+                $b[2] +
+                ($b[3] * 2) +
+                ($b[4] * 2)
+            ) / 6;
+
+            $nota_final['valor_nota'] = $this->arredondaNota($nota_calculada, $arredondamento_id);
+            unset($nota_final['bimestres']);
+        }
+
+        return $array_notas_finais;
+    }
+
     protected function arredondaNota($nota, $arredondamento_id)
     {
         if (!is_null($arredondamento_id) && !is_null($nota)) {
@@ -104,4 +138,5 @@ Class NotasFormatar {
         
         return $valor_nota_arredondada;
     }
+
 }
