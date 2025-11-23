@@ -35,6 +35,11 @@
         </div>
 
         <div class="form-group">
+            {{ Form::label('grupo_id', 'Grupo') }}
+            {{ Form::select('grupo_id', ['1' => 'Responsável', '2' => 'Estudante', '3' => 'Docente'], null, ['class' => 'form-control']) }}
+        </div>
+
+        <div class="form-group">
             {{ Form::submit('Cadastrar', ['class' => 'btn btn-primary']) }}
         </div>
 

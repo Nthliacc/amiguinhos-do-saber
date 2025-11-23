@@ -9,7 +9,7 @@ class Pessoa extends Eloquent {
 	 */
 	protected $table = 'pessoas';
 
-    protected $fillable = array('id', 'nome', 'email', 'cpf', 'grupo_id');
+    protected $fillable = array('id', 'nome', 'email', 'cpf','telefone', 'grupo_id');
 
     public function grupo()
     {

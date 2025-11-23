@@ -20,3 +20,4 @@ Route::get('/boletim', 'BoletimController@visualizarBoletim');
 Route::get('cadastro', 'PessoasController@visualizarFormulario');
 Route::post('/cadastrar-pessoa', 'PessoasController@cadastrarPessoa');
 Route::get('/relatorio-financeiro', 'FinanceiroController@visualizarRelatorioFinanceiro');
+Route::get('/importar-pessoas', 'ImportController@importarPessoas');
