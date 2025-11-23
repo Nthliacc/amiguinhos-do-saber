@@ -139,4 +139,12 @@ Class NotasFormatar {
         return $valor_nota_arredondada;
     }
 
+    protected function arredondamento3($valor_nota)
+    {
+        $parte_decimal = $valor_nota - floor($valor_nota);
+        if ($parte_decimal >= 0.7) {
+            return ceil($valor_nota);
+        }
+        return floor($valor_nota);
+    }
 }
