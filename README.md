@@ -1,79 +1,135 @@
-# Processo seletivo - Proesc
+# ✅ **Solução — Processo Seletivo Proesc (Analista N3)**
 
-Olá, bem vindo(a) ao processo seletivo do Proesc.com! 
+Este repositório contém todas as entregas solicitadas no desafio técnico do processo seletivo Proesc.
+Cada item foi implementado seguindo os requisitos do enunciado, utilizando **PHP 5.6**, **Laravel**, **PostgreSQL**, **HTML/CSS**, além de consultas SQL quando necessário.
 
-Este desafio técnico é uma atividade prática, onde avaliaremos seus conhecimentos de lógica de programação, banco de dados e html, assuntos que precisará utilizar diariamente para a função analista de suporte n3 no Proesc.
+---
 
-- Linguagens: PHP **5.6**
-- Framework: Laravel
-- Banco de dados: Postgres
+# 📌 **1. Relatório Financeiro — SQL e Visualização**
 
-# Relatório de Chamado: Amiguinhos do Saber
+**Consulta solicitada:** listar todas as pessoas que **não pagaram mensalidades**, trazendo:
 
-A instituição Amiguinhos do Saber abriu um chamado reportando alguns problemas. Veja a seguir.
+* nome
+* telefone
+* quantidade de parcelas não pagas
+* valor total em aberto
 
-## Ticket de Suporte: Solicitações de Ajustes e Tarefas Técnicas
+**Arquivo da entrega:**
+- `sql/relatorio_financeiro.sql`
+- `app/controllers/FinanceiroController.php`
+- `app/views/relatorios/financeiro.blade.php`
 
-Prezada equipe de suporte,
+**Consulta desenvolvida:**
+```sql
+SELECT 
+    p.nome,
+    p.telefone,
+    COUNT(pa.id) AS qtd_parcelas_nao_pagas,
+    SUM(pa.valor) AS valor_total_nao_pago
+FROM pessoas p
+JOIN debitos d ON d.pessoa_id = p.id
+JOIN parcelas pa ON pa.debito_id = d.id
+WHERE pa.pago = FALSE
+GROUP BY p.nome, p.telefone
+ORDER BY p.nome;
+```
 
-Estou entrando em contato para solicitar uma série de ajustes e tarefas técnicas relacionadas ao nosso sistema. Abaixo, detalho cada uma das solicitações esperando que possam ser atendidas com a máxima eficiência e qualidade.
+Visualização disponível em `/relatorio-financeiro`.
 
-### 1. Banco de Dados - Relatório Financeiro
+---
 
-**Descrição:** Precisamos de um relatório que traga todos os nomes e números de telefone das pessoas que não pagaram a mensalidade. Além disso, é necessário incluir a quantidade de parcelas não pagas e o valor somado total não pago por pessoa. Essa informação é vital para nossa equipe financeira iniciar o processo de cobrança efetiva.
+# 📌 **2. Ajuste de Boletim — Cálculo com Peso nos Bimestres (PHP)**
 
- **Requisitos**
-- Utilize SQL.
+Implementado conforme solicitado:
 
-**Entregável**
-- Consulta SQL que retorne como resultado o que foi pedido acima.
+Fórmula →
+`(1bim + 2bim + (3bim * 2) + (4bim * 2)) / 6`
 
-### 2. Ajuste de Boletim - Cálculo de Nota Final com Peso nos Bimestres
+**Arquivo da entrega:**
+- `app/Services/NotasFormatar.php`
 
-**Descrição:** Solicito a revisão do cálculo das notas anuais dos alunos. As notas devem ser calculadas da seguinte forma: soma das notas do 1º e 2º bimestres mais o dobro das notas do 3º e 4º bimestres, dividido por 6. A fórmula seria: (1bim + 2bim + (3bim * 2) + (4bim * 2)) / 6. Esse ajuste reflete melhor o peso acadêmico de cada bimestre em nosso currículo.
+---
 
- **Requisitos**
-- Código PHP.
+# 📌 **3. Novo Requisito — Arredondamento ≥ 0.7 (PHP)**
 
-**Entregável**
-- Lógica em código PHP como resultado da solicitação acima.
+Notas finais com frações ≥ 0.7 são arredondadas para o próximo inteiro.
 
-### 3. Novo Requisito - Tipo de Arredondamento
+**Arquivo da entrega:**
+- `app/Services/NotasFormatar.php`
 
-**Descrição:** Implementar um sistema de arredondamento para as notas finais, onde frações iguais ou superiores a 0,7 serão arredondadas para o número inteiro mais próximo. Por exemplo, uma nota final de 55,7 deve ser arredondada para 56.
+**Lógica implementada:**
+```php
+protected function arredondamento3($valor_nota)
+{
+    $parte_decimal = $valor_nota - floor($valor_nota);
+    if ($parte_decimal >= 0.7) {
+        return ceil($valor_nota);
+    }
+    return floor($valor_nota);
+}
+```
 
- **Requisitos**
-- Código PHP.
+---
 
-**Entregável**
-- Lógica em código PHP como resultado da solicitação acima.
+# 📌 **4. Ajuste de Boletim — Layout + Notas Vermelhas**
 
-### 4. Ajuste de Boletim - Layout e Notas Vermelhas
+Incluído no boletim:
 
-**Descrição:** É necessário ajustar o layout do boletim para incluir informações adicionais do aluno e uma funcionalidade que destaque notas vermelhas. Precisamos que seja exibido no boletim a nota máxima e mínima em cada período e no cálculo final, sendo respectivamente: 70 e 100. Com isso, queremos automatizar a definição de notas vermelhas para facilitar a visualização de desempenhos abaixo do esperado.
+* nota mínima: **70**
+* nota máxima: **100**
+* destaque automático de nota vermelha (abaixo de 70)
+* aplicação das regras do cálculo dos itens 2 e 3
 
- **Requisitos**
-- Necessário cumprir as tarefas 2 e 3 para cumprir esta demanda.
-- Código PHP, HTML, CSS (opcional javascript).
+**Arquivos da entrega:**
+- `app/views/relatorios/boletim.blade.php`
+- `app/controllers/BoletimController.php`
 
-**Entregável**
-- Lógica em código PHP, HTML, CSS (opcional javascript) como resultado da solicitação acima.
+Exemplo de regra aplicada no Blade:
+```php
+<td @if($nota !== null && $nota < 70) style="color: red; font-weight: bold;" @endif>
+    {{ $nota !== null ? $nota : '-' }}
+</td>
+```
 
-### 5. Problema “Erro ao Adicionar Pessoa”
+---
 
-**Situação I:** Ao tentar adicionar uma nova pessoa através do formulário em nosso sistema, um erro é retornado devido a um CPF inválido. Não sei por que isso está acontecendo, mas espero que você possa resolver.
+# 📌 **5. Cadastro de Pessoas — Correção e Funcionamento**
 
-**Situação II:** Devido ao atraso causado por esse problema, precisamos de uma solução imediata para adicionar pessoas diretamente no banco de dados. Uma lista de pessoas será compartilhada através do drive para inclusão manual. [Link do drive](https://docs.google.com/spreadsheets/d/1MB8xHwLek8PLgcOfBiyxWhk6ZplomVrSXtdtvEZjiXY/edit?usp=sharing).
+Corrigido e validado no controller:
 
- **Requisitos**
-- Código PHP, SCRIPT ou SQL.
+* Normalização do CPF e telefone (remoção de caracteres não numéricos)
+* Validação dos campos obrigatórios
+* Cadastro funcional via formulário
 
-**Entregável**
-- Lógica em código PHP, SCRIPT ou SQL como resultado da solicitação acima.
+**Arquivo:**
+- `app/controllers/PessoasController.php`
+- `app/views/formularios/cadastro.blade.php`
+- `models/Pessoa.php`
 
-Cada uma dessas solicitações é crucial para a operação contínua e a eficiência de nossos processos internos. Agradeço antecipadamente a atenção e a rapidez na resolução desses itens. Por favor, mantenham-me informado sobre o progresso de cada tarefa.
+---
 
-### Como executar 
+# 📌 **6. Importação de Pessoas via Planilha (CSV)**
+
+Implementado importador completo, com:
+
+* remoção de acentos
+* normalização de CPF e telefone
+* detecção do grupo pela versão não acentuada
+* inserção direta no PostgreSQL
+* tratamento de erros
+
+**Arquivo da entrega:**
+- `app/Http/Controllers/ImportController.php`
+- `storage/import/dados.csv`
+
+Comando disponível em:
+```
+/importar-pessoas
+```
+
+---
+
+# ▶️ **Como rodar o projeto**
 
 Para iniciá-lo, siga os passos abaixo:
 
@@ -119,10 +175,15 @@ $ php artisan db:seed
 $ php artisan serve
 ```
 
+---
 
-## Entrega
-Para entregar sua solução, baixe este projeto e resolva as solicitações propostas.
+# 📬 **Entrega**
 
-Assim que finalizar, suba a sua solução para o github e nos envie o link do seu repositório respondendo o e-mail recebido.
+Todas as solicitações foram implementadas com foco em:
 
-Em caso de dúvida, não hesite em nos contatar através do e-mail recebido ou para victorgama@proesc.com :]
+* clareza
+* consistência analítica
+* performance dentro das limitações do Laravel 5.1 / PHP 5.6
+* cuidados com dados sensíveis e normalização
+
+Em caso de dúvidas, estou à disposição.
