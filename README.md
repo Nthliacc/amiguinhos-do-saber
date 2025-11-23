@@ -91,6 +91,8 @@ Exemplo de regra aplicada no Blade:
 </td>
 ```
 
+![Imagem com resultado final do Boletim](boletim.png)
+
 ---
 
 # 📌 **5. Cadastro de Pessoas — Correção e Funcionamento**
