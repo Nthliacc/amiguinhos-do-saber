@@ -91,7 +91,7 @@ Exemplo de regra aplicada no Blade:
 </td>
 ```
 
-![Imagem com resultado final do Boletim](boletim.png)
+![Imagem com resultado final do Boletim](boletim_2.png)
 
 ---
 
