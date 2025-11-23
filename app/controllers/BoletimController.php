@@ -68,7 +68,9 @@ class BoletimController extends BaseController {
             'aluno' => $dados_aluno,
             'diarios' => $diarios,
             'avaliacoes' => $avaliacoes,
-            'disciplinas' => $disciplinas
+            'disciplinas' => $disciplinas,
+            'nota_minima' => 70,
+            'nota_maxima' => 100
         ]);
 
     }
